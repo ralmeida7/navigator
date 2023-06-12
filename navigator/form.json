@@ -1,0 +1,32 @@
+[
+  {
+    "id": "observation",
+    "controlType": "Textfield",
+    "label": "Observaciones",
+    "required": false
+  },
+  {
+    "id": "observation1",
+    "controlType": "Textfield",
+    "label": "Observaciones 1",
+    "required": false
+  },
+  {
+    "id": "observation2",
+    "controlType": "Textfield",
+    "label": "Observaciones 2",
+    "required": false
+  },
+  {
+    "id": "observation3",
+    "controlType": "Textfield",
+    "label": "Observaciones 3",
+    "required": false
+  },
+  {
+    "id": "date",
+    "controlType": "Date",
+    "label": "Fecha compromiso",
+    "required": false
+  }
+]

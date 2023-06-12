@@ -13,9 +13,16 @@ struct PersistenceController {
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        for _ in 0..<10 {
-            let newItem = Item(context: viewContext)
+        for index in 0..<10 {
+            let newItem = Task(context: viewContext)
             newItem.timestamp = Date()
+            newItem.id = UUID().uuidString
+            newItem.address = "8a calle 7-60 Sector A10 Bosques de San Marino Residenciales Niza casa 15 San Cristobal Zona 8 de Mixco"
+            newItem.notes = "Camino a Santa Barbara"
+            newItem.type = "DELIVERY"
+            newItem.longitude = -122.40616551
+            newItem.latitude = 37.58410689
+            newItem.status = "ASSIGNED"
         }
         do {
             try viewContext.save()

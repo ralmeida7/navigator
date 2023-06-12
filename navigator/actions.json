@@ -1,0 +1,23 @@
+[
+    {
+        "PK": "ASSIGNED_FORM",
+        "name": "FECHA DE COMPROMISO",
+        "code": "DATE",
+        "json": "[{\"icon\":\"today\",\"id\":\"Date_1\",\"controlType\":\"Date\",\"label\":\"Fecha de compromiso\",\"required\":false},{\"icon\":\"photo\",\"id\":\"Photo_1\",\"controlType\":\"Photo\",\"label\":\"Foto del perro\",\"required\":false}]",
+        "SK": "PAYMENT#DATE"
+    },
+    {
+        "PK": "ASSIGNED_FORM",
+        "name": "CLIENTE YA PAGO",
+        "code": "PAID_OUT",
+        "json": "[{\"icon\":\"pin\",\"id\":\"Textfield_1\",\"controlType\":\"Textfield\",\"label\":\"Observaciones\",\"required\":false},{\"icon\":\"photo\",\"id\":\"Photo_1\",\"controlType\":\"Photo\",\"label\":\"Comprobante\",\"required\":false}]",
+        "SK": "PAYMENT#PAID_OUT"
+    },
+    {
+        "name": "PRUEBA",
+        "code": "PRUEBA",
+        "json": "[{\"icon\":\"pin\",\"id\":\"Textfield_1\",\"controlType\":\"Textfield\",\"label\":\"Observación 1\",\"required\":false},{\"icon\":\"pin\",\"id\":\"Textfield_2\",\"controlType\":\"Textfield\",\"label\":\"Observación 2\",\"required\":false}]",
+        "SK": "PAYMENT#PRUEBA",
+        "PK": "ASSIGNED_FORM"
+    }
+]

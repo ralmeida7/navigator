@@ -9,28 +9,49 @@ import SwiftUI
 import CoreData
 
 struct ContentView: View {
-    @Environment(\.managedObjectContext) private var viewContext
-
-    @FetchRequest(
-        sortDescriptors: [NSSortDescriptor(keyPath: \Item.timestamp, ascending: true)],
-        animation: .default)
-    private var items: FetchedResults<Item>
-
+    
+    @StateObject var taskViewModel = TaskModelView()
+    @State var date = Date()
+    @State var presentMap = false
+    
     var body: some View {
         NavigationView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                    } label: {
-                        Text(item.timestamp!, formatter: itemFormatter)
+            Section(content: {
+                List(taskViewModel.tasks) { task in
+                    NavigationLink(destination: TaskView(task: task)) {
+                        VStack(alignment: .leading) {
+                            HStack {
+                                Label(task.type!, systemImage: "shippingbox")
+                                Spacer()
+                                Text(task.status!)
+                            }
+                            HStack {
+                                Text(task.address!)
+                                    .font(.headline)
+                                    .fontWeight(.thin)
+                                Spacer()
+                                Text(task.timestamp!.formatted())
+                            }
+                        }
                     }
                 }
-                .onDelete(perform: deleteItems)
-            }
+            }, header: {
+                VStack {
+                    DatePicker(selection: $date, displayedComponents: .date, label: { Text("Fecha") })
+                        .onChange(of: date) { date in
+                            withAnimation {
+                                taskViewModel.changeDate(date: date)
+                            }                            
+                        }
+                    Text("Tareas Completadas")
+                    ProgressView(value: 25, total: 100)
+                }.padding()
+            })
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
+                    Button(action: toggle) {
+                        Label("Add Item", systemImage: "map")
+                    }
                 }
                 ToolbarItem {
                     Button(action: addItem) {
@@ -38,39 +59,38 @@ struct ContentView: View {
                     }
                 }
             }
+            .navigationBarTitle(Text("Tareas"))
             Text("Select an item")
         }
+        .sheet(isPresented: $presentMap) {
+            MapView()
+        }
+        
     }
-
+    
+    func toggle() {
+        presentMap.toggle()
+    }
+    
     private func addItem() {
         withAnimation {
-            let newItem = Item(context: viewContext)
-            newItem.timestamp = Date()
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
+            taskViewModel.addTask(id: "1", status: "ASSIGNED", address: "San Cristobal", type: "DELIVERY", notes: "Nada")
         }
     }
-
+    
     private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            offsets.map { items[$0] }.forEach(viewContext.delete)
-
-            do {
-                try viewContext.save()
-            } catch {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-                let nsError = error as NSError
-                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-            }
-        }
+        //        withAnimation {
+        //            offsets.map { items[$0] }.forEach(viewContext.delete)
+        //
+        //            do {
+        //                try viewContext.save()
+        //            } catch {
+        //                // Replace this implementation with code to handle the error appropriately.
+        //                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+        //                let nsError = error as NSError
+        //                fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        //            }
+        //        }
     }
 }
 
@@ -82,7 +102,10 @@ private let itemFormatter: DateFormatter = {
 }()
 
 struct ContentView_Previews: PreviewProvider {
+    
     static var previews: some View {
-        ContentView().environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        Group {
+            ContentView()
+        }
     }
 }
