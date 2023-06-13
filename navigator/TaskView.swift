@@ -11,7 +11,7 @@ import MapKit
 struct TaskView: View {
     
     let taskModelView = TaskModelView()
-    var task: Task
+    var task: TaskItem
     @State var region = MKCoordinateRegion()
     @State var actions: Action? = nil
     @State var json = ""
@@ -110,8 +110,8 @@ struct TaskView_Previews: PreviewProvider {
     
     
     
-    static func createTask() -> Task {
-        let task = Task(context: PersistenceController.preview.container.viewContext)
+    static func createTask() -> TaskItem {
+        let task = TaskItem(context: PersistenceController.preview.container.viewContext)
         task.timestamp = Date()
         task.id = "Tarea 1"
         task.address = "8a calle 7-60 Sector A10 Bosques de San Marino Residenciales Niza casa 15 San Cristobal Zona 8 de Mixco"

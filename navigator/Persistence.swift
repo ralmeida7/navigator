@@ -14,7 +14,7 @@ struct PersistenceController {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
         for index in 0..<10 {
-            let newItem = Task(context: viewContext)
+            let newItem = TaskItem(context: viewContext)
             newItem.timestamp = Date()
             newItem.id = UUID().uuidString
             newItem.address = "8a calle 7-60 Sector A10 Bosques de San Marino Residenciales Niza casa 15 San Cristobal Zona 8 de Mixco"

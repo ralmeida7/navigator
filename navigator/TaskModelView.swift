@@ -10,7 +10,7 @@ import Combine
 import CoreData
 
 class TaskModelView: ObservableObject {
-    @Published var tasks: [Task] = []
+    @Published var tasks: [TaskItem] = []
     @Published var userLocations: [UserLocation] = []
     
     private let taskStorage = TaskStorage.shared;
@@ -19,7 +19,7 @@ class TaskModelView: ObservableObject {
     private var cancellable: AnyCancellable?
     private var cancellable2: AnyCancellable?
     
-    init(taskPublisher: AnyPublisher<[Task], Never> =
+    init(taskPublisher: AnyPublisher<[TaskItem], Never> =
     TaskStorage.shared.tasks.eraseToAnyPublisher(),
          userLocationPublisher: AnyPublisher<[UserLocation], Never> =
          TaskStorage.shared.userLocations.eraseToAnyPublisher()) {
@@ -39,7 +39,7 @@ class TaskModelView: ObservableObject {
         taskStorage.changeDate(date: date)
     }
     
-    func startTask(task: Task) {
+    func startTask(task: TaskItem) {
         taskStorage.startTask(task: task)
         locationManager.startMonitoring(task: task)
     }
@@ -48,7 +48,7 @@ class TaskModelView: ObservableObject {
         locationManager.stopMonitoring()
     }
     
-    func resolveTask(task: Task) {
+    func resolveTask(task: TaskItem) {
         
     }
     
@@ -67,9 +67,9 @@ class TaskModelView: ObservableObject {
 
 struct TaskModel: Identifiable {
     
-    private var task: Task
+    private var task: TaskItem
     
-    init(task: Task) {
+    init(task: TaskItem) {
         self.task = task
     }
     

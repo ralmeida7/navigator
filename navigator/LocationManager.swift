@@ -19,7 +19,7 @@ class LocationManager: NSObject {
     var course: Double?
     var speed: Double?
     var first = true
-    var task: Task?
+    var task: TaskItem?
     
     override init() {
         super.init();
@@ -30,7 +30,7 @@ class LocationManager: NSObject {
         clLocationManager.requestAlwaysAuthorization()
     }
     
-    func startMonitoring(task: Task) {
+    func startMonitoring(task: TaskItem) {
         self.task = task
         clLocationManager.startUpdatingLocation()
     }
@@ -67,6 +67,7 @@ extension LocationManager: CLLocationManagerDelegate {
 //        if ( first ) {
 //            print(self.locations)
 //        }
+        
         self.course = location.course
         self.speed = location.speed
         first = false

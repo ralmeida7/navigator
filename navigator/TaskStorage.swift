@@ -10,25 +10,25 @@ import CoreData
 import Combine
 
 class TaskStorage: NSObject, ObservableObject {
-    var tasks = CurrentValueSubject<[Task], Never>([])
+    var tasks = CurrentValueSubject<[TaskItem], Never>([])
     var userLocations = CurrentValueSubject<[UserLocation], Never>([])
-    private let taskFetchController: NSFetchedResultsController<Task>
+    private let taskFetchController: NSFetchedResultsController<TaskItem>
     private let userLocationFetchController: NSFetchedResultsController<UserLocation>
     static let shared = TaskStorage()
     
     private override init() {
-        let fetchRequest = Task.fetchRequest()
+        let fetchRequest = TaskItem.fetchRequest()
         fetchRequest.sortDescriptors =  [NSSortDescriptor(key: "timestamp", ascending: true)]
         taskFetchController = NSFetchedResultsController(
             fetchRequest: fetchRequest,
-            managedObjectContext: PersistenceController.preview.container.viewContext,
+            managedObjectContext: PersistenceController.shared.container.viewContext,
             sectionNameKeyPath: nil, cacheName: nil)
         
         let fetchUserLocationRequest = UserLocation.fetchRequest()
         fetchUserLocationRequest.sortDescriptors =  [NSSortDescriptor(key: "date", ascending: true)]
         userLocationFetchController = NSFetchedResultsController(
             fetchRequest: fetchUserLocationRequest,
-            managedObjectContext: PersistenceController.preview.container.viewContext,
+            managedObjectContext: PersistenceController.shared.container.viewContext,
             sectionNameKeyPath: nil, cacheName: nil)
         
         super.init()
@@ -53,7 +53,7 @@ class TaskStorage: NSObject, ObservableObject {
         }
     }
     
-    func monitorTask(task: Task) {
+    func monitorTask(task: TaskItem) {
         print(task.id!)
         userLocationFetchController.fetchRequest.predicate = NSPredicate(format: "task.id =  %@", task.id!)
         do {
@@ -75,10 +75,10 @@ class TaskStorage: NSObject, ObservableObject {
         }
     }
     
-    func startTask(task: Task) {
+    func startTask(task: TaskItem) {
         task.status = "ACTIVE"
         do {
-            try PersistenceController.preview.container.viewContext.save()
+            try PersistenceController.shared.container.viewContext.save()
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
@@ -87,8 +87,8 @@ class TaskStorage: NSObject, ObservableObject {
 
     }
     
-    func saveLocation(task: Task, latitude: Double, longitude: Double, course: Double, speed: Double, date: Date) {
-        let userLocation = UserLocation(context: PersistenceController.preview.container.viewContext)
+    func saveLocation(task: TaskItem, latitude: Double, longitude: Double, course: Double, speed: Double, date: Date) {
+        let userLocation = UserLocation(context: PersistenceController.shared.container.viewContext)
         userLocation.id = UUID().uuidString
         userLocation.latitude = latitude
         userLocation.longitude = longitude
@@ -97,7 +97,7 @@ class TaskStorage: NSObject, ObservableObject {
         userLocation.date = date
         userLocation.task = task
         do {
-            try PersistenceController.preview.container.viewContext.save()
+            try PersistenceController.shared.container.viewContext.save()
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
@@ -106,7 +106,7 @@ class TaskStorage: NSObject, ObservableObject {
     }
     
     func addTask(id: String, status: String, address: String, type: String, notes: String) {
-        let newItem = Task(context: PersistenceController.shared.container.viewContext)
+        let newItem = TaskItem(context: PersistenceController.shared.container.viewContext)
         newItem.timestamp = Date()
         newItem.id = id;
         newItem.address = address
@@ -130,7 +130,7 @@ extension TaskStorage: NSFetchedResultsControllerDelegate {
         
         if let userLocations = controller.fetchedObjects as? [UserLocation] {
             self.userLocations.value = userLocations
-        } else if let tasks = controller.fetchedObjects as? [Task] {
+        } else if let tasks = controller.fetchedObjects as? [TaskItem] {
             self.tasks.value = tasks
         }
         

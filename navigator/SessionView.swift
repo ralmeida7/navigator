@@ -44,22 +44,22 @@ struct SessionView: View {
             self.userState.username = authUser.username
             
             // 3
-            let user = try await Amplify.DataStore.query(
-                User.self,
-                byId: authUser.userId
-            )
+//            let user = try await Amplify.DataStore.query(
+//                User.self,
+//                byId: authUser.userId
+//            )
             
             // 4
-            if let existingUser = user {
-                print("Existing user: \(existingUser)")
-            } else {
-                let newUser = User(
-                    id: authUser.userId,
-                    username: authUser.username
-                )
-                let savedUser = try await Amplify.DataStore.save(newUser)
-                print("Created user: \(savedUser)")
-            }
+//            if let existingUser = user {
+//                print("Existing user: \(existingUser)")
+//            } else {
+//                let newUser = User(
+//                    id: authUser.userId,
+//                    username: authUser.username
+//                )
+//                let savedUser = try await Amplify.DataStore.save(newUser)
+//                print("Created user: \(savedUser)")
+//            }
         } catch {
             print(error)
         }
