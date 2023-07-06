@@ -22,7 +22,7 @@ struct PersistenceController {
             newItem.type = "DELIVERY"
             newItem.longitude = -122.40616551
             newItem.latitude = 37.58410689
-            newItem.status = "ASSIGNED"
+            newItem.status = "ASSIGNED1"
         }
         do {
             try viewContext.save()

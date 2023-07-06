@@ -43,7 +43,7 @@ class TaskStorage: NSObject, ObservableObject {
                 
         taskFetchController.fetchRequest.predicate = NSPredicate(format: "timestamp > %@ && timestamp < %@", date.onlyDate! as NSDate, tomorrow as NSDate)
         
-        //taskFetchController.delegate = self
+        taskFetchController.delegate = self
         
         do {
             try taskFetchController.performFetch()
@@ -87,6 +87,17 @@ class TaskStorage: NSObject, ObservableObject {
 
     }
     
+    func resolveTask(task: TaskItem) {
+        task.status = TaskStatus.done.rawValue
+        do {
+            try PersistenceController.shared.container.viewContext.save()
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
+
+    }
+    
     func saveLocation(task: TaskItem, latitude: Double, longitude: Double, course: Double, speed: Double, date: Date) {
         let userLocation = UserLocation(context: PersistenceController.shared.container.viewContext)
         userLocation.id = UUID().uuidString
@@ -105,9 +116,11 @@ class TaskStorage: NSObject, ObservableObject {
 
     }
     
-    func addTask(id: String, status: String, address: String, type: String, notes: String) {
+    func addTask(id: String, status: String, addressId: String, address: String, type: String, notes: String, date: String) {
+        let isoDateFormatter = ISO8601DateFormatter()
+        isoDateFormatter.formatOptions = [.withFullDate]
         let newItem = TaskItem(context: PersistenceController.shared.container.viewContext)
-        newItem.timestamp = Date()
+        newItem.timestamp = isoDateFormatter.date(from: date)!.addingTimeInterval(86400)
         newItem.id = id;
         newItem.address = address
         newItem.status = status
@@ -119,6 +132,17 @@ class TaskStorage: NSObject, ObservableObject {
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
         }
+    }
+    
+    
+    func deleteTask(task: TaskItem) {
+        PersistenceController.shared.container.viewContext.delete(task)
+//        do {
+//            try PersistenceController.shared.container.viewContext.delete(task)
+//        } catch {
+//            let nsError = error as NSError
+//            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+//        }
     }
 
 }

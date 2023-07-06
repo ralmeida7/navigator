@@ -34,6 +34,8 @@
 		62BB510328694E5B00F975C1 /* actions.json in Resources */ = {isa = PBXBuildFile; fileRef = 62BB510128694E5B00F975C1 /* actions.json */; };
 		9DE7FDAF403717190FABB5E3 /* awsconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = F28192758111132E42A41AD0 /* awsconfiguration.json */; };
 		BD189FEE287EFA1A7BE14BE6 /* amplifyconfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = 7F93112BFCC9CAE6439BC734 /* amplifyconfiguration.json */; };
+		CC3C95C82A3E733A0007AC70 /* TaskStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3C95C72A3E733A0007AC70 /* TaskStatus.swift */; };
+		CC3C95CA2A3E75240007AC70 /* UpdateTask.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC3C95C92A3E75240007AC70 /* UpdateTask.swift */; };
 		CC79F2EE2A37D311006BAADE /* AWSAPIPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = CC79F2ED2A37D311006BAADE /* AWSAPIPlugin */; };
 		CC79F2F02A37D311006BAADE /* AWSCognitoAuthPlugin in Frameworks */ = {isa = PBXBuildFile; productRef = CC79F2EF2A37D311006BAADE /* AWSCognitoAuthPlugin */; };
 		CC79F2F22A37D311006BAADE /* AWSDataStorePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = CC79F2F12A37D311006BAADE /* AWSDataStorePlugin */; };
@@ -41,6 +43,7 @@
 		CC79F2F62A37D311006BAADE /* AWSS3StoragePlugin in Frameworks */ = {isa = PBXBuildFile; productRef = CC79F2F52A37D311006BAADE /* AWSS3StoragePlugin */; };
 		CC79F2F82A37D311006BAADE /* Amplify in Frameworks */ = {isa = PBXBuildFile; productRef = CC79F2F72A37D311006BAADE /* Amplify */; };
 		CC79F2FB2A37E327006BAADE /* Authenticator in Frameworks */ = {isa = PBXBuildFile; productRef = CC79F2FA2A37E327006BAADE /* Authenticator */; };
+		CC79F2FD2A38C6DC006BAADE /* TaskDto.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC79F2FC2A38C6DC006BAADE /* TaskDto.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -72,6 +75,9 @@
 		62BB510028694E5B00F975C1 /* form.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = form.json; sourceTree = "<group>"; };
 		62BB510128694E5B00F975C1 /* actions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = actions.json; sourceTree = "<group>"; };
 		7F93112BFCC9CAE6439BC734 /* amplifyconfiguration.json */ = {isa = PBXFileReference; explicitFileType = text.json; path = amplifyconfiguration.json; sourceTree = "<group>"; };
+		CC3C95C72A3E733A0007AC70 /* TaskStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskStatus.swift; sourceTree = "<group>"; };
+		CC3C95C92A3E75240007AC70 /* UpdateTask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateTask.swift; sourceTree = "<group>"; };
+		CC79F2FC2A38C6DC006BAADE /* TaskDto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaskDto.swift; sourceTree = "<group>"; };
 		F28192758111132E42A41AD0 /* awsconfiguration.json */ = {isa = PBXFileReference; explicitFileType = text.json; path = awsconfiguration.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -109,6 +115,9 @@
 				627EB1C528734D27004C5AEE /* Action.swift */,
 				627EB1C728734FCA004C5AEE /* FormControl.swift */,
 				6249FB3629148E8E00774CBD /* User.swift */,
+				CC79F2FC2A38C6DC006BAADE /* TaskDto.swift */,
+				CC3C95C72A3E733A0007AC70 /* TaskStatus.swift */,
+				CC3C95C92A3E75240007AC70 /* UpdateTask.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -270,6 +279,7 @@
 				627EB1C628734D27004C5AEE /* Action.swift in Sources */,
 				62A54DE5280C84B100FCC053 /* Persistence.swift in Sources */,
 				629EE286285F8D46009F32DC /* TaskView.swift in Sources */,
+				CC3C95CA2A3E75240007AC70 /* UpdateTask.swift in Sources */,
 				62A54DE8280C84B100FCC053 /* navigator.xcdatamodeld in Sources */,
 				6226AB5A2856B03500F63408 /* TaskStorage.swift in Sources */,
 				6249FB3729148E8E00774CBD /* User.swift in Sources */,
@@ -278,11 +288,13 @@
 				623C9AAD29147AB100E1D2D5 /* UserState.swift in Sources */,
 				62A54DDE280C84AD00FCC053 /* ContentView.swift in Sources */,
 				627EB1CC28735C86004C5AEE /* ImagePicker.swift in Sources */,
+				CC79F2FD2A38C6DC006BAADE /* TaskDto.swift in Sources */,
 				623C9AAB29147AB100E1D2D5 /* SignUpView.swift in Sources */,
 				623C9AAC29147AB100E1D2D5 /* ConfirmSignUpView.swift in Sources */,
 				62A54DDC280C84AD00FCC053 /* navigatorApp.swift in Sources */,
 				627EB1C828734FCA004C5AEE /* FormControl.swift in Sources */,
 				623C9AAA29147AB100E1D2D5 /* LoginView.swift in Sources */,
+				CC3C95C82A3E733A0007AC70 /* TaskStatus.swift in Sources */,
 				627EB1CE2873A03B004C5AEE /* LocationManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

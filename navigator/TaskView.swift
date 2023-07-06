@@ -54,12 +54,13 @@ struct TaskView: View {
             }
             HStack(alignment: .center) {
                 Spacer()
-                if task.status == "ASSIGNED" {
+                if task.status == "CREATED" {
                     Button("Iniciar") {
                         taskModelView.startTask(task: task)
                     }
                 } else if task.status == "ACTIVE" {
                     Button("Resolver") {
+                        taskModelView.stopTask()
                         presentActions = true
                     }
                 }
@@ -77,7 +78,7 @@ struct TaskView: View {
             ActionSheet(title: Text("Finalización de tarea"), message: Text("Seleccione una opción"), buttons: getActions())
         }
         .sheet(isPresented: $presentFormView) {
-            FormView(formControls: $formControls)
+            FormView(formControls: $formControls, task: task)
         }
     }
     

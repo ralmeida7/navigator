@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import CoreData
+import Amplify
 
 class TaskModelView: ObservableObject {
     @Published var tasks: [TaskItem] = []
@@ -18,6 +19,8 @@ class TaskModelView: ObservableObject {
     
     private var cancellable: AnyCancellable?
     private var cancellable2: AnyCancellable?
+    
+    let baseUrl = "https://7qasxgtg0j.execute-api.us-west-2.amazonaws.com/"
     
     init(taskPublisher: AnyPublisher<[TaskItem], Never> =
     TaskStorage.shared.tasks.eraseToAnyPublisher(),
@@ -31,8 +34,8 @@ class TaskModelView: ObservableObject {
         }
     }
 
-    public func addTask(id: String, status: String, address: String, type: String, notes: String) {
-        taskStorage.addTask(id: id, status: status, address: address, type: type, notes: notes)
+    public func addTask(id: String, status: String, addressId: String, address: String, type: String, notes: String, date: String) {
+        taskStorage.addTask(id: id, status: status, addressId: addressId, address: address, type: type, notes: notes, date: date)
     }
     
     public func changeDate(date: Date) {
@@ -40,6 +43,7 @@ class TaskModelView: ObservableObject {
     }
     
     func startTask(task: TaskItem) {
+        
         taskStorage.startTask(task: task)
         locationManager.startMonitoring(task: task)
     }
@@ -49,7 +53,66 @@ class TaskModelView: ObservableObject {
     }
     
     func resolveTask(task: TaskItem) {
+        taskStorage.resolveTask(task: task)
+    }
+    
+    func isActive() -> Bool {
+        return locationManager.isActive()
+    }
+    
+    func updateTask(task: String, status: String, taskData: String?) async throws -> Bool {
+        let url = String(format: baseUrl + "tasks")
+        guard let serviceUrl = URL(string: url) else { return false }
+        var urlRequest = URLRequest(url: serviceUrl)
+        urlRequest.httpMethod = "PUT"
+        urlRequest.setValue("Application/json", forHTTPHeaderField: "Content-Type")
+        let formatter = DateFormatter()
+        let date = Date()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let dateString = formatter.string(from: date.addingTimeInterval(86400))
+        //@todo utilizar usuario
+        let updateTask = UpdateTask(user: "roberto", date: dateString, task: task, status: status, data: taskData)
+        let httpBody = try JSONEncoder().encode(updateTask)
+        urlRequest.httpBody = httpBody
+        let (data, _) = try await URLSession.shared.data(from: serviceUrl)
+        let json = try JSONSerialization.jsonObject(with: data, options: [])
+        print(json)
+        return true
+    }
+    
+    func refresh() async throws {
+        let user = try await Amplify.Auth.getCurrentUser()
+        print(user.username)
+        print(user.userId)
+        let date = Date()
+        let formatter = DateFormatter()
+        formatter.timeZone = TimeZone.utc
+        formatter.dateFormat = "yyyy-MM-dd"
+        let dateString = formatter.string(from: date)
+        //@todo utilizar usuario
+        let url = String(format: "https://7qasxgtg0j.execute-api.us-west-2.amazonaws.com/users/roberto/tasks/\(dateString)")
+        guard let serviceUrl = URL(string: url) else { return }
+        let (data, _) = try await URLSession.shared.data(from: serviceUrl)
+        let tasks = try JSONDecoder().decode([TaskDto].self, from: data)
+        let localTasks = self.tasks.map { task in
+            TaskDto(id: task.id ?? "", type: task.type ?? "", date: dateString, description: task.description, addressId: "", address: "", asigneeId: "", longitude: task.longitude, latitude: task.latitude, data: nil, status: task.status ?? "")
+        }
+        let difference = tasks.difference(from: localTasks) { t1, t2 in
+            t1.id == t2.id
+        }
+
+        for task in tasks {
+            print(task.date)
+        }
         
+        for change in difference {
+            switch change {
+            case let .remove(offset, _, _):
+                taskStorage.deleteTask(task: self.tasks[offset])
+            case let .insert(_, newElement, _):
+                taskStorage.addTask(id: newElement.id, status: newElement.status, addressId: newElement.addressId ?? "", address: newElement.address!, type: newElement.type, notes: newElement.description, date: newElement.date)
+            }
+        }
     }
     
     func getResolveActions(taskType: String) -> [Action] {

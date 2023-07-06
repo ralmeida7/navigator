@@ -10,8 +10,9 @@ import SwiftUI
 struct FormView: View {
     
     @Binding var formControls: [FormControl]
+    var task: TaskItem
     private let taskModelView = TaskModelView()
-    
+    @Environment(\.dismiss) var dismiss
     
     var body: some View {
         Form {
@@ -28,7 +29,8 @@ struct FormView: View {
             }
             Section {
                 Button("Aceptar") {
-                    taskModelView.stopTask()
+                    taskModelView.resolveTask(task: task)
+                    dismiss()
                 }
             }
         }

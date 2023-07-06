@@ -10,7 +10,7 @@ import CoreData
 
 struct ContentView: View {
     
-    @StateObject var taskViewModel = TaskModelView()
+    @ObservedObject var taskViewModel = TaskModelView()
     @State var date = Date()
     @State var presentMap = false
     
@@ -62,6 +62,25 @@ struct ContentView: View {
             .navigationBarTitle(Text("Tareas"))
             Text("Select an item")
         }
+        .refreshable {
+            print("Do your refresh work here")
+            do {
+                try await taskViewModel.refresh()
+            } catch {
+                
+            }
+        }
+        .onAppear() {
+            if ( !taskViewModel.isActive() ) {
+                for task in taskViewModel.tasks {
+                    if ( task.status == "ACTIVE" ) {
+                        taskViewModel.startTask(task: task)
+                    }
+                }
+                        
+            }
+            
+        }
         .sheet(isPresented: $presentMap) {
             MapView()
         }
@@ -74,7 +93,7 @@ struct ContentView: View {
     
     private func addItem() {
         withAnimation {
-            taskViewModel.addTask(id: "1", status: "ASSIGNED", address: "San Cristobal", type: "DELIVERY", notes: "Nada")
+            taskViewModel.addTask(id: UUID().uuidString, status: "create", addressId: UUID().uuidString, address: "San Cristobal", type: "DELIVERY", notes: "Nada", date: "2023-06-17")
         }
     }
     

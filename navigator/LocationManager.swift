@@ -40,6 +40,10 @@ class LocationManager: NSObject {
         clLocationManager.stopUpdatingLocation()
     }
         
+    func isActive() -> Bool {
+        return self.task != nil
+    }
+    
 }
 
 extension LocationManager: CLLocationManagerDelegate {
