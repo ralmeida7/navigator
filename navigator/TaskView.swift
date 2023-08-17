@@ -13,7 +13,7 @@ struct TaskView: View {
     let taskModelView = TaskModelView()
     var task: TaskItem
     @State var region = MKCoordinateRegion()
-    @State var actions: Action? = nil
+//    @State var actions: Action? = nil
     @State var json = ""
     @State private var presentActions = false
     @State private var presentFormView = false
@@ -81,13 +81,12 @@ struct TaskView: View {
             FormView(formControls: $formControls, task: task)
         }
     }
-    
-    func getActions() -> [ActionSheet.Button] {
-        let actions = taskModelView.getResolveActions(taskType: task.type!)
+        
+    func getActions()  -> [ActionSheet.Button] {
+        let actions = taskModelView.taskTypesActions[task.type!]!
         var buttons =  actions.map { action in
             ActionSheet.Button.default(Text(action.name), action: {
                 do {
-                    self.actions = action
                     self.json = action.json
                     self.formControls = try JSONDecoder().decode([FormControl].self, from: action.json.data(using: .utf8)!)
                 } catch {

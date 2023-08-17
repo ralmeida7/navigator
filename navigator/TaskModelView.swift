@@ -13,6 +13,7 @@ import Amplify
 class TaskModelView: ObservableObject {
     @Published var tasks: [TaskItem] = []
     @Published var userLocations: [UserLocation] = []
+    @Published var taskTypesActions: [String: [Action]] = [:]
     
     private let taskStorage = TaskStorage.shared;
     private let locationManager = LocationManager.shared
@@ -97,6 +98,16 @@ class TaskModelView: ObservableObject {
         let localTasks = self.tasks.map { task in
             TaskDto(id: task.id ?? "", type: task.type ?? "", date: dateString, description: task.description, addressId: "", address: "", asigneeId: "", longitude: task.longitude, latitude: task.latitude, data: nil, status: task.status ?? "")
         }
+
+        for task in tasks {
+            if let actions = taskTypesActions[task.type] {
+                print("Found task")
+            } else {
+                taskTypesActions[task.type] = try await getResolveActions(taskType: task.type)
+            }
+        }
+        
+        
         let difference = tasks.difference(from: localTasks) { t1, t2 in
             t1.id == t2.id
         }
@@ -115,16 +126,12 @@ class TaskModelView: ObservableObject {
         }
     }
     
-    func getResolveActions(taskType: String) -> [Action] {
-        if let url = Bundle.main.url(forResource: "actions", withExtension: "json") {
-            do {
-                let data = try Data(contentsOf: url)
-                return try JSONDecoder().decode([Action].self, from: data)
-            } catch {
-                print("Error!! Unable to parse  .json")
-            }
-        }
-        return []
+    func getResolveActions(taskType: String) async throws -> [Action] {
+        let url = String(format: baseUrl + "catalogs/ASSIGNED_FORM/\(taskType)")
+        guard let serviceUrl = URL(string: url) else { return [] }
+        let (data, _) = try await URLSession.shared.data(from: serviceUrl)
+        let actions = try JSONDecoder().decode([Action].self, from: data)
+        return actions
     }
 }
 
